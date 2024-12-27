@@ -10,6 +10,8 @@ use std::{
 };
 
 mod args;
+mod config;
+mod worker;
 
 #[tokio::main]
 async fn main() {
@@ -20,6 +22,17 @@ async fn main() {
             return;
         }
     };
+
+    let config_contents = tokio::fs::read_to_string("./normandy.ron")
+        .await
+        .expect("Failed to read `normandy.ron`.");
+
+    let config =
+        ron::from_str::<config::Config>(&config_contents).expect("Failed to parse config file");
+
+    let config = config.validate().expect("Failed to validate config");
+
+    println!("Config: {config:#?}");
 
     let total_requests = Arc::new(AtomicU32::new(0));
 
