@@ -133,6 +133,17 @@ impl ValidatedRequest {
                 new_url.set_path(&new_path);
                 reqwest::get(new_url).await
             }
+            Method::POST => {
+                let new_path = format!("{}{}", base_url.path(), self.path);
+                let mut new_url = base_url.clone();
+                new_url.set_path(&new_path);
+                let client = reqwest::Client::new();
+                let mut builder = client.post(new_url).headers(self.headers);
+                if let Some(body) = self.body {
+                    builder = builder.body(body);
+                }
+                builder.send().await
+            }
             _ => unimplemented!(),
         }
     }

@@ -16,7 +16,6 @@ thiserror = "2.0.9"
 tokio = { version = "1.42.0", features = [
   "net",
   "fs",
-  "signal",
   "macros",
   "rt-multi-thread",
 ] }
